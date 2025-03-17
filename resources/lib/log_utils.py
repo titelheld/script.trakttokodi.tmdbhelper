@@ -26,7 +26,7 @@ name = kodi.get_name()
 
 def log(msg, level=LOGDEBUG):
     try:
-        if isinstance(msg, unicode):
+        if isinstance(msg, str):
             msg = '%s (ENCODED)' % msg.encode('utf-8')
         kodi.__log('%s: %s' % (name, msg), level)
     except Exception as e:
@@ -43,7 +43,7 @@ def trace(method):
         result = method(*args, **kwargs)
         end = time.time()
         log('{name!r} time: {time:2.4f}s args: |{args!r}| kwargs: |{kwargs!r}|'
-            .format(name=method.__name__,time=end - start, args=args, kwargs=kwargs), LOGDEBUG)
+            .format(name=method.__name__, time=end - start, args=args, kwargs=kwargs), LOGDEBUG)
         return result
 
     def method_trace_off(*args, **kwargs):

@@ -25,11 +25,11 @@ from constants import DISPATCHER
 
 
 def main(argv=None):
-    if sys.argv:
+    if argv is None:
         argv = sys.argv
-    queries = kodi.parse_query(sys.argv[2])
-    log_utils.log('Version: |%s| Queries: |%s|' % (kodi.get_version(), queries), log_utils.LOGDEBUG)
-    log_utils.log('Args: |%s|' % argv, log_utils.LOGDEBUG)
+    queries = kodi.parse_query(argv[2])
+    log_utils.log(f'Version: |{kodi.get_version()}| Queries: |{queries}|', log_utils.LOGDEBUG)
+    log_utils.log(f'Args: |{argv}|', log_utils.LOGDEBUG)
 
     mode = queries.get('mode', None)
     DISPATCHER.dispatch(mode, queries)

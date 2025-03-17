@@ -34,9 +34,9 @@ MODES = __enum(
 )
 
 DIRECTORIES = __enum(
-    DATA=kodi.translate_path('special://profile/addon_data/%s/' % kodi.get_id())
+    DATA=kodi.translate_path(f'special://profile/addon_data/{kodi.get_id()}/')
 )
 
 ICONS = __enum(
-    ADDON=kodi.translate_path('special://home/addons/{0!s}/icon.png'.format(kodi.get_id()))
+    ADDON=kodi.translate_path(f'special://home/addons/{kodi.get_id()}/icon.png')
 )

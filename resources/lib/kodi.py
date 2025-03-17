@@ -22,8 +22,7 @@ import xbmcplugin
 import xbmcgui
 import xbmc
 import xbmcvfs
-import urllib
-import urlparse
+import urllib.parse as urlparse
 import sys
 import os
 import re
@@ -48,7 +47,7 @@ show_settings = addon.openSettings
 
 
 def execute_jsonrpc(command):
-    if not isinstance(command, basestring):
+    if not isinstance(command, str):
         command = json.dumps(command)
     response = xbmc.executeJSONRPC(command)
     return json.loads(response)
@@ -59,19 +58,19 @@ def get_handle():
 
 
 def get_path():
-    return addon.getAddonInfo('path').decode('utf-8')
+    return addon.getAddonInfo('path')
 
 
 def get_profile():
-    return addon.getAddonInfo('profile').decode('utf-8')
+    return addon.getAddonInfo('profile')
 
 
 def translate_path(path):
-    return xbmc.translatePath(path).decode('utf-8')
+    return xbmcvfs.translatePath(path)
 
 
 def set_setting(id, value):
-    if not isinstance(value, basestring): value = str(value)
+    if not isinstance(value, str): value = str(value)
     addon.setSetting(id, value)
 
 
@@ -97,12 +96,12 @@ def get_fanart():
 
 def get_plugin_url(queries):
     try:
-        query = urllib.urlencode(queries)
+        query = urllib.parse.urlencode(queries)
     except UnicodeEncodeError:
         for k in queries:
-            if isinstance(queries[k], unicode):
+            if isinstance(queries[k], str):
                 queries[k] = queries[k].encode('utf-8')
-        query = urllib.urlencode(queries)
+        query = urllib.parse.urlencode(queries)
 
     return sys.argv[0] + '?' + query
 
@@ -230,7 +229,7 @@ def get_keyboard(heading, default=''):
 
 def i18n(string_id):
     try:
-        return addon.getLocalizedString(strings.STRINGS[string_id]).encode('utf-8', 'ignore')
+        return addon.getLocalizedString(strings.STRINGS[string_id])
     except Exception as e:
         xbmc.log('%s: Failed String Lookup: %s (%s)' % (get_name(), string_id, e), xbmc.LOGWARNING)
         return string_id
@@ -314,9 +313,8 @@ def get_kodi_version():
         def __str__(self):
             return '|%s| -> |%s|%s|%s|%s|%s|' % (self.version, self.major, self.minor, self.tag, self.tag_version, self.revision)
 
-    class KodiVersion(object):
-        __metaclass__ = MetaClass
-        version = xbmc.getInfoLabel('System.BuildVersion').decode('utf-8')
+    class KodiVersion(object, metaclass=MetaClass):
+        version = xbmc.getInfoLabel('System.BuildVersion')
         match = re.search('([0-9]+)\.([0-9]+)', version)
         if match: major, minor = match.groups()
         match = re.search('-([a-zA-Z]+)([0-9]*)', version)
@@ -333,13 +331,13 @@ def get_kodi_version():
         except:
             minor = 0
         try:
-            revision = revision.decode('utf-8')
+            revision = revision
         except:
-            revision = u''
+            revision = ''
         try:
-            tag = tag.decode('utf-8')
+            tag = tag
         except:
-            tag = u''
+            tag = ''
         try:
             tag_version = int(tag_version)
         except:

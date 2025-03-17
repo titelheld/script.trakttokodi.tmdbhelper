@@ -22,7 +22,7 @@ import log_utils
 import rpc
 from constants import DISPATCHER, MODES
 
-from urllib2 import unquote
+from urllib.parse import unquote
 
 requests = rpc.Library()
 i18n = kodi.i18n
@@ -47,8 +47,8 @@ def play_route(video_type, title, year, trakt_id=None, episode_id=None, season_i
                 file_path = requests.find_episode(tvshow_id, season, episode)
 
             if not file_path:
-                str_season = '0' + str(season) if len(season) == 1 else str(season)
-                str_episode = '0' + str(episode) if len(episode) == 1 else str(episode)
+                str_season = '0' + str(season) if len(str(season)) == 1 else str(season)
+                str_episode = '0' + str(episode) if len(str(episode)) == 1 else str(episode)
                 label = '%s - S%sE%s' % (title, str_season, str_episode)
                 kodi.notify(msg=i18n('not_found_') % label)
 
@@ -65,10 +65,9 @@ def play_route(video_type, title, year, trakt_id=None, episode_id=None, season_i
 
 @DISPATCHER.register(MODES.OPEN, args=['video_type', 'title', 'year'], kwargs=['trakt_id', 'episode_id', 'season_id', 'season', 'episode', 'ep_title', 'imdb_id', 'tmdb_id', 'tvdb_id'])
 def open_route(video_type, title, year, trakt_id=None, episode_id=None, season_id=None, imdb_id=None, tmdb_id=None, tvdb_id=None, season=None, episode=None, ep_title=None):
-    if (video_type != 'episode') and (video_type != 'movie'):
-        title = unquote(title)
-        if ep_title is not None:
-            ep_title = unquote(ep_title)
+    title = unquote(title)
+    if ep_title is not None:
+        ep_title = unquote(ep_title)
 
     if video_type == 'episode':
         play_route(video_type, title, year, trakt_id, episode_id, season_id, imdb_id, tmdb_id, tvdb_id, season, episode, ep_title)
@@ -86,7 +85,7 @@ def open_route(video_type, title, year, trakt_id=None, episode_id=None, season_i
                     kodi.execute_builtin('ActivateWindow(Videos,videodb://tvshows/titles/%s/%s/?tvshowid=%s)' % (str(tvshow_id), str(season), str(tvshow_id)))
 
             if not season_exists:
-                str_season = '0' + str(season) if len(season) == 1 else str(season)
+                str_season = '0' + str(season) if len(str(season)) == 1 else str(season)
                 label = '%s - S%s' % (title, str_season)
                 kodi.notify(msg=i18n('not_found_') % label)
 
